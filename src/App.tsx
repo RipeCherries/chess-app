@@ -1,10 +1,12 @@
 import React from 'react';
 import './App.css';
 
+import ChessBoard from "./components/chessBoard/ChessBoard";
+
 const App = () => {
     return (
-        <div className="App">
-            Hello world
+        <div className="app">
+            <ChessBoard/>
         </div>
     )
 }
