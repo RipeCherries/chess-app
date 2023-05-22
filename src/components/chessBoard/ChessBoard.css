@@ -5,16 +5,3 @@
     grid-template-columns: repeat(8, 80px);
     grid-template-rows: repeat(8, 80px);
 }
-
-.chessboard .tile {
-    width: 80px;
-    height: 80px;
-}
-
-.chessboard .black-tile {
-    background-color: #779556;
-}
-
-.chessboard .white-tile {
-    background-color: #ebece0;
-}
