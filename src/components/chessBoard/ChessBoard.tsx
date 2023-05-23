@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
 import Tile from "../tile/Tile";
+import Referee from "../../referee/Referee";
 
 import "./ChessBoard.css";
 
@@ -10,30 +11,47 @@ interface Piece {
     image: string;
     x: number;
     y: number;
+    type: PieceType;
+    team: TeamType;
+}
+
+export enum PieceType {
+    PAWN,
+    BISHOP,
+    KNIGHT,
+    ROOK,
+    QUEEN,
+    KING
+}
+
+export enum TeamType {
+    OPPONENT,
+    OUR
 }
 
 const initialBoardState: Piece[] = [];
 
 for (let i = 0; i < horizontalAxis.length; ++i) {
-    initialBoardState.push({image: "assets/images/pawn_b.png", x: i, y: 6});
+    initialBoardState.push({image: "assets/images/pawn_b.png", x: i, y: 6, type: PieceType.PAWN, team: TeamType.OPPONENT});
 }
 
 for (let i = 0; i < horizontalAxis.length; ++i) {
-    initialBoardState.push({image: "assets/images/pawn_w.png", x: i, y: 1});
+    initialBoardState.push({image: "assets/images/pawn_w.png", x: i, y: 1, type: PieceType.PAWN, team: TeamType.OUR});
 }
 
 for (let i = 0; i < 2; ++i) {
+    const teamType = i === 0 ? TeamType.OPPONENT : TeamType.OUR;
     const type = i === 0 ? "b" : "w";
     const y = i === 0 ? 7 : 0;
 
-    initialBoardState.push({image: `assets/images/rook_${type}.png`, x: 0, y});
-    initialBoardState.push({image: `assets/images/rook_${type}.png`, x: 7, y});
-    initialBoardState.push({image: `assets/images/knight_${type}.png`, x: 1, y});
-    initialBoardState.push({image: `assets/images/knight_${type}.png`, x: 6, y});
-    initialBoardState.push({image: `assets/images/bishop_${type}.png`, x: 2, y});
-    initialBoardState.push({image: `assets/images/bishop_${type}.png`, x: 5, y});
-    initialBoardState.push({image: `assets/images/queen_${type}.png`, x: 3, y});
-    initialBoardState.push({image: `assets/images/king_${type}.png`, x: 4, y});
+    initialBoardState.push({image: `assets/images/rook_${type}.png`, x: 0, y, type: PieceType.ROOK, team: teamType});
+    initialBoardState.push({image: `assets/images/rook_${type}.png`, x: 7, y, type: PieceType.ROOK, team: teamType});
+    initialBoardState.push({image: `assets/images/knight_${type}.png`, x: 1, y, type: PieceType.KNIGHT, team: teamType});
+    initialBoardState.push({image: `assets/images/knight_${type}.png`, x: 6, y, type: PieceType.KNIGHT, team: teamType});
+    initialBoardState.push({image: `assets/images/bishop_${type}.png`, x: 2, y, type: PieceType.BISHOP, team: teamType});
+    initialBoardState.push({image: `assets/images/bishop_${type}.png`, x: 5, y, type: PieceType.BISHOP, team: teamType});
+    initialBoardState.push({image: `assets/images/queen_${type}.png`, x: 3, y, type: PieceType.QUEEN, team: teamType});
+    initialBoardState.push({image: `assets/images/king_${type}.png`, x: 4, y, type: PieceType.KING, team: teamType});
 }
 
 const ChessBoard = () => {
@@ -42,6 +60,7 @@ const ChessBoard = () => {
     const [gridY, setGridY] = useState(0);
     const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
     const chessBoardRef = useRef<HTMLDivElement>(null);
+    const referee = new Referee();
 
     const grabPiece = (e: React.MouseEvent) => {
         const element = e.target as HTMLElement;
@@ -100,8 +119,15 @@ const ChessBoard = () => {
             setPieces((prev) => {
                 return prev.map((piece) => {
                     if (piece.x === gridX && piece.y === gridY) {
-                        piece.x = x;
-                        piece.y = y;
+                        const validMove = referee.isValidMove(gridX, gridY, x, y, piece.type, piece.team);
+                        if (validMove) {
+                            piece.x = x;
+                            piece.y = y;
+                        } else {
+                            activePiece.style.position = "relative";
+                            activePiece.style.removeProperty("top");
+                            activePiece.style.removeProperty("left");
+                        }
                     }
                     return piece;
                 });
