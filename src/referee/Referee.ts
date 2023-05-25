@@ -3,12 +3,10 @@ import {Piece, PieceType, TeamType} from "../components/chessBoard/ChessBoard";
 class Referee {
     tileIsOccupied(x: number, y: number, boardState: Piece[]): boolean {
         const occupiedTile = boardState.find(piece => piece.x === x && piece.y === y);
-        if (occupiedTile) {
-            return true;
-        }
 
-        return false;
+        return !!occupiedTile;
     }
+
     isValidMove(prevX: number, prevY: number, x: number, y: number, type: PieceType, team: TeamType, boardState: Piece[]): boolean {
         if (type === PieceType.PAWN) {
             const specialRow = team === TeamType.OUR ? 1 : 6;
