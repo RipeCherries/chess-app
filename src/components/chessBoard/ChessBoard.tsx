@@ -13,6 +13,7 @@ export interface Piece {
     y: number;
     type: PieceType;
     team: TeamType;
+    enPassant?: boolean;
 }
 
 export enum PieceType {
@@ -119,14 +120,42 @@ const ChessBoard = () => {
 
             if (currentPiece) {
                 const validMove = referee.isValidMove(gridX, gridY, x, y, currentPiece.type, currentPiece.team, pieces);
+                const isEnPassantMove = referee.isEnPassantMove(gridX, gridY, x, y, currentPiece.type, currentPiece.team, pieces);
+                const pawnDirection = currentPiece.team === TeamType.OUR ? 1 : -1;
 
-                if (validMove) {
+                if (isEnPassantMove) {
                     const updatedPieces = pieces.reduce((result, piece) => {
-                        if (piece.x === currentPiece.x && piece.y === currentPiece.y) {
+                        if (piece.x === gridX && piece.y === gridY) {
+                            piece.enPassant = false;
+                            piece.x = x;
+                            piece.y = y;
+                            result.push(piece);
+                        } else if (!(piece.x === x && piece.y === y - pawnDirection)) {
+                            if (piece.type === PieceType.PAWN) {
+                                piece.enPassant = false;
+                            }
+                            result.push(piece);
+                        }
+                        return result;
+                    }, [] as Piece[]);
+
+                    setPieces(updatedPieces);
+                } else if (validMove) {
+                    const updatedPieces = pieces.reduce((result, piece) => {
+                        if (piece.x === gridX && piece.y === gridY) {
+                            if (Math.abs(gridY - y) === 2 && piece.type === PieceType.PAWN) {
+                                piece.enPassant = true;
+                            } else {
+                                piece.enPassant = false;
+                            }
+
                             piece.x = x;
                             piece.y = y;
                             result.push(piece);
                         } else if (!(piece.x === x && piece.y === y)) {
+                            if (piece.type === PieceType.PAWN) {
+                                piece.enPassant = true;
+                            }
                             result.push(piece);
                         }
                         return result;

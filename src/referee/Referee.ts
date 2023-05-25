@@ -13,6 +13,20 @@ class Referee {
         return !!occupiedTile;
     }
 
+    isEnPassantMove(prevX: number, prevY: number, x: number, y: number, type: PieceType, team: TeamType, boardState: Piece[]): boolean {
+        const pawnDirection = team === TeamType.OUR ? 1 : -1;
+
+        if (type === PieceType.PAWN) {
+            if ((x - prevX === -1 || x - prevX === 1) && y - prevY === pawnDirection) {
+                const piece = boardState.find(piece => piece.x === x && piece.y === y - pawnDirection && piece.enPassant);
+                if (piece) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     isValidMove(prevX: number, prevY: number, x: number, y: number, type: PieceType, team: TeamType, boardState: Piece[]): boolean {
         if (type === PieceType.PAWN) {
             const specialRow = team === TeamType.OUR ? 1 : 6;
