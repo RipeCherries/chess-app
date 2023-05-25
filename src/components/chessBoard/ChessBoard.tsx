@@ -106,8 +106,6 @@ const ChessBoard = () => {
             } else {
                 activePiece.style.top = `${y}px`;
             }
-            // activePiece.style.left = (x < minX) ? `${minX}px` : `${x}px`;
-            // activePiece.style.top = (y < minY) ? `${minY}px` : `${y}px`;
         }
     }
 
@@ -116,22 +114,31 @@ const ChessBoard = () => {
             const x = Math.floor((e.clientX - chessBoardRef.current.offsetLeft) / 80);
             const y = Math.abs(Math.ceil((e.clientY - chessBoardRef.current.offsetTop - 640) / 80));
 
-            setPieces((prev) => {
-                return prev.map((piece) => {
-                    if (piece.x === gridX && piece.y === gridY) {
-                        const validMove = referee.isValidMove(gridX, gridY, x, y, piece.type, piece.team, prev);
-                        if (validMove) {
+            const currentPiece = pieces.find(piece => piece.x === gridX && piece.y === gridY);
+            const attackedPiece = pieces.find(piece => piece.x === x && piece.y === y);
+
+            if (currentPiece) {
+                const validMove = referee.isValidMove(gridX, gridY, x, y, currentPiece.type, currentPiece.team, pieces);
+
+                if (validMove) {
+                    const updatedPieces = pieces.reduce((result, piece) => {
+                        if (piece.x === currentPiece.x && piece.y === currentPiece.y) {
                             piece.x = x;
                             piece.y = y;
-                        } else {
-                            activePiece.style.position = "relative";
-                            activePiece.style.removeProperty("top");
-                            activePiece.style.removeProperty("left");
+                            result.push(piece);
+                        } else if (!(piece.x === x && piece.y === y)) {
+                            result.push(piece);
                         }
-                    }
-                    return piece;
-                });
-            });
+                        return result;
+                    }, [] as Piece[]);
+
+                    setPieces(updatedPieces);
+                } else {
+                    activePiece.style.position = "relative";
+                    activePiece.style.removeProperty("top");
+                    activePiece.style.removeProperty("left");
+                }
+            }
 
             setActivePiece(null);
         }

@@ -7,6 +7,12 @@ class Referee {
         return !!occupiedTile;
     }
 
+    tileIsOccupiedByOpponent(x: number, y: number, boardState: Piece[], team: TeamType): boolean {
+        const occupiedTile = boardState.find(piece => piece.x === x && piece.y === y && piece.team !== team);
+
+        return !!occupiedTile;
+    }
+
     isValidMove(prevX: number, prevY: number, x: number, y: number, type: PieceType, team: TeamType, boardState: Piece[]): boolean {
         if (type === PieceType.PAWN) {
             const specialRow = team === TeamType.OUR ? 1 : 6;
@@ -18,6 +24,14 @@ class Referee {
                 }
             } else if (prevX === x && y - prevY === pawnDirection) {
                 if (!this.tileIsOccupied(x, y, boardState)) {
+                    return true;
+                }
+            } else if (x - prevX === -1 && y - prevY === pawnDirection) {
+                if (this.tileIsOccupiedByOpponent(x, y, boardState, team)) {
+                    return true;
+                }
+            } else if (x - prevX === 1 && y - prevY === pawnDirection) {
+                if (this.tileIsOccupiedByOpponent(x, y, boardState, team)) {
                     return true;
                 }
             }
