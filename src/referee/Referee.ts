@@ -72,6 +72,52 @@ class Referee {
                     }
                 }
             }
+        } else if (type === PieceType.BISHOP) {
+            for (let i = 1; i < 8; ++i) {
+                if (position.x > prevPosition.x && position.y > prevPosition.y) {
+                    let passedPosition: Position = {x: prevPosition.x + i, y: prevPosition.y + i};
+
+                    if (this.tileIsOccupied(passedPosition, boardState)) {
+                        break;
+                    }
+                }
+                if (position.x - prevPosition.x === i && position.y - prevPosition.y === i) {
+                    return true;
+                }
+
+                if (position.x > prevPosition.x && position.y < prevPosition.y) {
+                    let passedPosition: Position = {x: prevPosition.x + i, y: prevPosition.y - i};
+
+                    if (this.tileIsOccupied(passedPosition, boardState)) {
+                        break;
+                    }
+                }
+                if (position.x - prevPosition.x === i && position.y - prevPosition.y === -i) {
+                    return true;
+                }
+
+                if (position.x < prevPosition.x && position.y > prevPosition.y) {
+                    let passedPosition: Position = {x: prevPosition.x - i, y: prevPosition.y + i};
+
+                    if (this.tileIsOccupied(passedPosition, boardState)) {
+                        break;
+                    }
+                }
+                if (position.x - prevPosition.x === -i && position.y - prevPosition.y === i) {
+                    return true;
+                }
+
+                if (position.x < prevPosition.x && position.y < prevPosition.y) {
+                    let passedPosition: Position = {x: prevPosition.x - i, y: prevPosition.y - i};
+
+                    if (this.tileIsOccupied(passedPosition, boardState)) {
+                        break;
+                    }
+                }
+                if (position.x - prevPosition.x === -i && position.y - prevPosition.y === -i) {
+                    return true;
+                }
+            }
         }
 
         return false;
