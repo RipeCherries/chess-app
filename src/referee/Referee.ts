@@ -77,45 +77,57 @@ class Referee {
                 if (position.x > prevPosition.x && position.y > prevPosition.y) {
                     let passedPosition: Position = {x: prevPosition.x + i, y: prevPosition.y + i};
 
-                    if (this.tileIsOccupied(passedPosition, boardState)) {
-                        break;
+                    if (samePosition(passedPosition, position)) {
+                        if (this.tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
+                            return true;
+                        }
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)) {
+                            break;
+                        }
                     }
-                }
-                if (position.x - prevPosition.x === i && position.y - prevPosition.y === i) {
-                    return true;
                 }
 
                 if (position.x > prevPosition.x && position.y < prevPosition.y) {
                     let passedPosition: Position = {x: prevPosition.x + i, y: prevPosition.y - i};
 
-                    if (this.tileIsOccupied(passedPosition, boardState)) {
-                        break;
+                    if (samePosition(passedPosition, position)) {
+                        if (this.tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
+                            return true;
+                        }
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)) {
+                            break;
+                        }
                     }
-                }
-                if (position.x - prevPosition.x === i && position.y - prevPosition.y === -i) {
-                    return true;
                 }
 
                 if (position.x < prevPosition.x && position.y > prevPosition.y) {
                     let passedPosition: Position = {x: prevPosition.x - i, y: prevPosition.y + i};
 
-                    if (this.tileIsOccupied(passedPosition, boardState)) {
-                        break;
+                    if (samePosition(passedPosition, position)) {
+                        if (this.tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
+                            return true;
+                        }
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)) {
+                            break;
+                        }
                     }
-                }
-                if (position.x - prevPosition.x === -i && position.y - prevPosition.y === i) {
-                    return true;
                 }
 
                 if (position.x < prevPosition.x && position.y < prevPosition.y) {
                     let passedPosition: Position = {x: prevPosition.x - i, y: prevPosition.y - i};
 
-                    if (this.tileIsOccupied(passedPosition, boardState)) {
-                        break;
+                    if (samePosition(passedPosition, position)) {
+                        if (this.tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
+                            return true;
+                        }
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)) {
+                            break;
+                        }
                     }
-                }
-                if (position.x - prevPosition.x === -i && position.y - prevPosition.y === -i) {
-                    return true;
                 }
             }
         }
