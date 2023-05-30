@@ -130,6 +130,41 @@ class Referee {
                     }
                 }
             }
+        } else if (type === PieceType.ROOK) {
+            if (prevPosition.x === position.x) {
+                for (let i = 1; i < 8; ++i) {
+                    let multiplier = position.y < prevPosition.y ? -1 : 1;
+
+                    let passedPosition: Position = {x: prevPosition.x, y: prevPosition.y + (i * multiplier)};
+                    if (samePosition(passedPosition, position)) {
+                        if (this.tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
+                            return true;
+                        }
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (prevPosition.y === position.y) {
+                for (let i = 1; i < 8; ++i) {
+                    let multiplier = position.x < prevPosition.x ? -1 : 1;
+
+                    let passedPosition: Position = {x: prevPosition.x + (i * multiplier), y: prevPosition.y};
+                    if (samePosition(passedPosition, position)) {
+                        if (this.tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
+                            return true;
+                        }
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)) {
+                            break;
+                        }
+                    }
+                }
+            }
+
         }
 
         return false;
