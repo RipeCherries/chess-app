@@ -182,24 +182,28 @@ class Referee {
 
     queenMove(prevPosition: Position, position: Position, team: TeamType, boardState: Piece[]): boolean {
         for (let i = 1; i < 8; ++i) {
-            let multiplierX;
-            let multiplierY;
+            let multiplierX = (position.x < prevPosition.x) ? -1 : (position.x > prevPosition.x) ? 1 : 0;
+            let multiplierY = (position.y < prevPosition.y) ? -1 : (position.y > prevPosition.y) ? 1 : 0;
 
-            if (position.x < prevPosition.x) {
-                multiplierX = -1;
-            } else if (position.x > prevPosition.x) {
-                multiplierX = 1;
+            let passedPosition: Position = {x: prevPosition.x + (i * multiplierX), y: prevPosition.y + (i * multiplierY)};
+            if (samePosition(passedPosition, position)) {
+                if (this.tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
+                    return true;
+                }
             } else {
-                multiplierX = 0;
+                if (this.tileIsOccupied(passedPosition, boardState)) {
+                    break;
+                }
             }
+        }
 
-            if (position.y < prevPosition.y) {
-                multiplierY = -1;
-            } else if (position.y > prevPosition.y) {
-                multiplierY = 1;
-            } else {
-                multiplierY = 0;
-            }
+        return false;
+    }
+
+    kingMove(prevPosition: Position, position: Position, team: TeamType, boardState: Piece[]): boolean {
+        for (let i = 1; i < 2; ++i) {
+            let multiplierX = (position.x < prevPosition.x) ? -1 : (position.x > prevPosition.x) ? 1 : 0;
+            let multiplierY = (position.y < prevPosition.y) ? -1 : (position.y > prevPosition.y) ? 1 : 0;
 
             let passedPosition: Position = {x: prevPosition.x + (i * multiplierX), y: prevPosition.y + (i * multiplierY)};
             if (samePosition(passedPosition, position)) {
@@ -234,6 +238,9 @@ class Referee {
                 break;
             case PieceType.QUEEN:
                 validMove = this.queenMove(prevPosition, position, team, boardState);
+                break;
+            case PieceType.KING:
+                validMove = this.kingMove(prevPosition, position, team, boardState);
                 break;
         }
 
