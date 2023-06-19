@@ -5,3 +5,38 @@
     grid-template-columns: repeat(8, 80px);
     grid-template-rows: repeat(8, 80px);
 }
+
+.pawn-promotion-modal {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.modal-body {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: absolute;
+    top: calc(50% - 150px);
+    left: calc(50% - 320px);
+    height: 300px;
+    width: 640px;
+    background-color: rgba(189, 189, 189, 0.8);
+}
+
+.modal-body > img {
+    height: 120px;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.modal-body > img:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+}
