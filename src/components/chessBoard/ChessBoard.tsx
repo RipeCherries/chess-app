@@ -24,7 +24,18 @@ const ChessBoard = () => {
     const chessBoardRef = useRef<HTMLDivElement>(null);
     const referee = new Referee();
 
+    const updateValidMoves = () => {
+        setPieces((currentPieces) => {
+            return currentPieces.map(piece => {
+                piece.possibleMoves = referee.getValidMoves(piece, currentPieces);
+                return piece;
+            });
+        });
+    }
+
     const grabPiece = (e: React.MouseEvent) => {
+        updateValidMoves();
+
         const element = e.target as HTMLElement;
 
         if (element.classList.contains("chess-piece") && chessBoardRef.current) {
@@ -184,7 +195,10 @@ const ChessBoard = () => {
             const piece = pieces.find(piece => samePosition(piece.position, {x: j, y: i}));
             let image = piece ? piece.image : undefined;
 
-            board.push(<Tile key={ `${j}:${i}` } image={ image } number={ j + i + 2 }/>);
+            let currentPiece = activePiece !== null ? pieces.find(piece => samePosition(piece.position, grabPosition)) : undefined;
+            let highlight = currentPiece?.possibleMoves ? currentPiece.possibleMoves.some(piece => samePosition(piece, {x: j, y: i})) : false;
+
+            board.push(<Tile key={ `${j}:${i}` } image={ image } number={ j + i + 2 } highlight={ highlight } />);
         }
     }
 

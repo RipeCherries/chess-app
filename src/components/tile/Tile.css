@@ -27,3 +27,11 @@
 .white-tile {
     background-color: #ebece0;
 }
+
+.highlight-tile::before {
+    content: " ";
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.4);
+}

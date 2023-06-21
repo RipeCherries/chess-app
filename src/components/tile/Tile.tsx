@@ -4,23 +4,22 @@ import "./Tile.css";
 
 interface Props {
     number: number;
-    image?: string;
+    image?: string
+    highlight: boolean
 }
 
-const Tile = ( {number, image}: Props ) => {
-    if (number % 2 === 0) {
-        return (
-            <div className="tile black-tile">
-                {image && <div style={{backgroundImage: `url(${image})`}} className="chess-piece"></div>}
-            </div>
-        );
-    } else {
-        return (
-            <div className="tile white-tile">
-                {image && <div style={{backgroundImage: `url(${image})`}} className="chess-piece"></div>}
-            </div>
-        );
-    }
+const Tile = ({number, image, highlight}: Props) => {
+    const className: string = ["tile",
+        number % 2 === 0 && "black-tile",
+        number % 2 !== 0 && "white-tile",
+        highlight && "highlight-tile"
+    ].filter(Boolean).join(" ");
+
+    return (
+        <div className={className}>
+            {image && <div style={{backgroundImage: `url(${image})`}} className="chess-piece"></div>}
+        </div>
+    );
 }
 
 export default Tile;
