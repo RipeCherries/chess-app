@@ -7,7 +7,7 @@ import {
     bishopMove,
     knightMove,
     getPossiblePawnMoves,
-    getPossibleKnightMoves, getPossibleBishopMoves, getPossibleRookMoves, getPossibleQueenMoves
+    getPossibleKnightMoves, getPossibleBishopMoves, getPossibleRookMoves, getPossibleQueenMoves, getPossibleKingMove
 } from "./rules";
 
 class Referee {
@@ -64,6 +64,8 @@ class Referee {
                 return getPossibleRookMoves(piece, boardState);
             case PieceType.QUEEN:
                 return getPossibleQueenMoves(piece, boardState);
+            case PieceType.KING:
+                return getPossibleKingMove(piece, boardState);
             default:
                 return [];
         }

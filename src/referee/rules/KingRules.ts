@@ -1,5 +1,5 @@
 import {Piece, Position, samePosition, TeamType} from "../../Constants";
-import {tileIsEmptyOrOccupiedByOpponent, tileIsOccupied} from "./GeneralRules";
+import {tileIsEmptyOrOccupiedByOpponent, tileIsOccupied, tileIsOccupiedByOpponent} from "./GeneralRules";
 
 export const kingMove = (prevPosition: Position, position: Position, team: TeamType, boardState: Piece[]): boolean => {
     for (let i = 1; i < 2; ++i) {
@@ -19,4 +19,114 @@ export const kingMove = (prevPosition: Position, position: Position, team: TeamT
     }
 
     return false;
+}
+
+export const getPossibleKingMove = (king: Piece, boardState: Piece[]): Position[] => {
+    const possibleMoves: Position[] = [];
+
+    for (let i = 1; i < 2; ++i) {
+        const destination: Position = {x: king.position.x, y: king.position.y + i};
+
+        if (!tileIsOccupied(destination, boardState)) {
+            possibleMoves.push(destination);
+        } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
+            possibleMoves.push(destination);
+            break;
+        } else {
+            break;
+        }
+    }
+
+    for (let i = 1; i < 2; ++i) {
+        const destination: Position = {x: king.position.x, y: king.position.y - i};
+
+        if (!tileIsOccupied(destination, boardState)) {
+            possibleMoves.push(destination);
+        } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
+            possibleMoves.push(destination);
+            break;
+        } else {
+            break;
+        }
+    }
+
+    for (let i = 1; i < 2; ++i) {
+        const destination: Position = {x: king.position.x - i, y: king.position.y};
+
+        if (!tileIsOccupied(destination, boardState)) {
+            possibleMoves.push(destination);
+        } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
+            possibleMoves.push(destination);
+            break;
+        } else {
+            break;
+        }
+    }
+
+    for (let i = 1; i < 2; ++i) {
+        const destination: Position = {x: king.position.x + i, y: king.position.y};
+
+        if (!tileIsOccupied(destination, boardState)) {
+            possibleMoves.push(destination);
+        } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
+            possibleMoves.push(destination);
+            break;
+        } else {
+            break;
+        }
+    }
+
+    for (let i = 1; i < 2; ++i) {
+        const destination: Position = {x: king.position.x + i, y: king.position.y + i};
+
+        if (!tileIsOccupied(destination, boardState)) {
+            possibleMoves.push(destination);
+        } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
+            possibleMoves.push(destination);
+            break;
+        } else {
+            break;
+        }
+    }
+
+    for (let i = 1; i < 2; ++i) {
+        const destination: Position = {x: king.position.x + i, y: king.position.y - i};
+
+        if (!tileIsOccupied(destination, boardState)) {
+            possibleMoves.push(destination);
+        } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
+            possibleMoves.push(destination);
+            break;
+        } else {
+            break;
+        }
+    }
+
+    for (let i = 1; i < 2; ++i) {
+        const destination: Position = {x: king.position.x - i, y: king.position.y - i};
+
+        if (!tileIsOccupied(destination, boardState)) {
+            possibleMoves.push(destination);
+        } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
+            possibleMoves.push(destination);
+            break;
+        } else {
+            break;
+        }
+    }
+
+    for (let i = 1; i < 2; ++i) {
+        const destination: Position = {x: king.position.x - i, y: king.position.y + i};
+
+        if (!tileIsOccupied(destination, boardState)) {
+            possibleMoves.push(destination);
+        } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
+            possibleMoves.push(destination);
+            break;
+        } else {
+            break;
+        }
+    }
+
+    return possibleMoves;
 }
