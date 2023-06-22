@@ -1,5 +1,14 @@
 import { Piece, PieceType, Position, TeamType } from "../Constants";
-import {pawnMove, kingMove, queenMove, rookMove, bishopMove, knightMove, getPossiblePawnMoves} from "./rules";
+import {
+    pawnMove,
+    kingMove,
+    queenMove,
+    rookMove,
+    bishopMove,
+    knightMove,
+    getPossiblePawnMoves,
+    getPossibleKnightMoves
+} from "./rules";
 
 class Referee {
     isEnPassantMove(prevPosition: Position, position: Position, type: PieceType, team: TeamType, boardState: Piece[]): boolean {
@@ -47,6 +56,8 @@ class Referee {
         switch (piece.type) {
             case PieceType.PAWN:
                 return getPossiblePawnMoves(piece, boardState);
+            case PieceType.KNIGHT:
+                return getPossibleKnightMoves(piece, boardState);
             default:
                 return [];
         }
