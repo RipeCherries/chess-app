@@ -3,13 +3,12 @@ import Tile from "../tile/Tile";
 import {
     GRID_SIZE,
     HORIZONTAL_AXIS,
-    Piece,
-    Position,
     samePosition,
     VERTICAL_AXIS
 } from "../../Constants";
 
 import "./ChessBoard.css";
+import {Position, Piece} from "../../models";
 
 interface Props {
     playMove: (piece: Piece, position: Position) => boolean;
@@ -18,7 +17,7 @@ interface Props {
 
 const ChessBoard = ({playMove, pieces}: Props) => {
     const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
-    const [grabPosition, setGrabPosition] = useState<Position>({x: -1, y: -1});
+    const [grabPosition, setGrabPosition] = useState<Position>(new Position(-1, -1));
     const chessBoardRef = useRef<HTMLDivElement>(null);
 
     const grabPiece = (e: React.MouseEvent) => {
@@ -27,7 +26,7 @@ const ChessBoard = ({playMove, pieces}: Props) => {
         if (element.classList.contains("chess-piece") && chessBoardRef.current) {
             const grabX = Math.floor((e.clientX - chessBoardRef.current.offsetLeft) / GRID_SIZE);
             const grabY = Math.abs(Math.ceil((e.clientY - chessBoardRef.current.offsetTop - 640) / GRID_SIZE));
-            setGrabPosition({x: grabX, y: grabY});
+            setGrabPosition(new Position(grabX, grabY));
 
             const x = e.clientX - GRID_SIZE / 2;
             const y = e.clientY - GRID_SIZE / 2;
@@ -77,7 +76,7 @@ const ChessBoard = ({playMove, pieces}: Props) => {
             const currentPiece = pieces.find(piece => samePosition(piece.position, grabPosition));
 
             if (currentPiece) {
-                const success = playMove(currentPiece, {x, y});
+                const success = playMove(currentPiece, new Position(x, y));
                 if (!success) {
                     activePiece.style.position = "relative";
                     activePiece.style.removeProperty("top");
@@ -92,14 +91,11 @@ const ChessBoard = ({playMove, pieces}: Props) => {
     let board = [];
     for (let i = VERTICAL_AXIS.length - 1; i >= 0; --i) {
         for (let j = 0; j < HORIZONTAL_AXIS.length; ++j) {
-            const piece = pieces.find(piece => samePosition(piece.position, {x: j, y: i}));
+            const piece = pieces.find(piece => samePosition(piece.position, new Position(j, i)));
             let image = piece ? piece.image : undefined;
 
             let currentPiece = activePiece !== null ? pieces.find(piece => samePosition(piece.position, grabPosition)) : undefined;
-            let highlight = currentPiece?.possibleMoves ? currentPiece.possibleMoves.some(piece => samePosition(piece, {
-                x: j,
-                y: i
-            })) : false;
+            let highlight = currentPiece?.possibleMoves ? currentPiece.possibleMoves.some(piece => samePosition(piece, new Position(j, i))) : false;
 
             board.push(<Tile key={`${j}:${i}`} image={image} number={j + i + 2} highlight={highlight}/>);
         }

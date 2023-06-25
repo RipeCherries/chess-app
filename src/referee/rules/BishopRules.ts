@@ -1,10 +1,11 @@
-import { Piece, Position, samePosition, TeamType } from "../../Constants";
+import { samePosition, TeamType } from "../../Constants";
 import {tileIsEmptyOrOccupiedByOpponent, tileIsOccupied, tileIsOccupiedByOpponent} from "./GeneralRules";
+import {Position, Piece} from "../../models";
 
 export const bishopMove = (prevPosition: Position, position: Position, team: TeamType, boardState: Piece[]): boolean => {
     for (let i = 1; i < 8; ++i) {
         if (position.x > prevPosition.x && position.y > prevPosition.y) {
-            let passedPosition: Position = {x: prevPosition.x + i, y: prevPosition.y + i};
+            let passedPosition = new Position(prevPosition.x + i, prevPosition.y + i);
 
             if (samePosition(passedPosition, position)) {
                 if (tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
@@ -18,7 +19,7 @@ export const bishopMove = (prevPosition: Position, position: Position, team: Tea
         }
 
         if (position.x > prevPosition.x && position.y < prevPosition.y) {
-            let passedPosition: Position = {x: prevPosition.x + i, y: prevPosition.y - i};
+            let passedPosition = new Position(prevPosition.x + i, prevPosition.y - i);
 
             if (samePosition(passedPosition, position)) {
                 if (tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
@@ -32,7 +33,7 @@ export const bishopMove = (prevPosition: Position, position: Position, team: Tea
         }
 
         if (position.x < prevPosition.x && position.y > prevPosition.y) {
-            let passedPosition: Position = {x: prevPosition.x - i, y: prevPosition.y + i};
+            let passedPosition = new Position(prevPosition.x - i, prevPosition.y + i);
 
             if (samePosition(passedPosition, position)) {
                 if (tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
@@ -46,7 +47,7 @@ export const bishopMove = (prevPosition: Position, position: Position, team: Tea
         }
 
         if (position.x < prevPosition.x && position.y < prevPosition.y) {
-            let passedPosition: Position = {x: prevPosition.x - i, y: prevPosition.y - i};
+            let passedPosition = new Position(prevPosition.x - i, prevPosition.y - i);
 
             if (samePosition(passedPosition, position)) {
                 if (tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
@@ -67,7 +68,7 @@ export const getPossibleBishopMoves = (bishop: Piece, boardState: Piece[]): Posi
     const possibleMoves: Position[] = [];
 
     for (let i = 1; i < 8; ++i) {
-        const destination: Position = {x: bishop.position.x + i, y: bishop.position.y + i};
+        const destination = new Position(bishop.position.x + i, bishop.position.y + i);
 
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);
@@ -80,7 +81,7 @@ export const getPossibleBishopMoves = (bishop: Piece, boardState: Piece[]): Posi
     }
 
     for (let i = 1; i < 8; ++i) {
-        const destination: Position = {x: bishop.position.x + i, y: bishop.position.y - i};
+        const destination = new Position(bishop.position.x + i, bishop.position.y - i);
 
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);
@@ -93,7 +94,7 @@ export const getPossibleBishopMoves = (bishop: Piece, boardState: Piece[]): Posi
     }
 
     for (let i = 1; i < 8; ++i) {
-        const destination: Position = {x: bishop.position.x - i, y: bishop.position.y - i};
+        const destination = new Position(bishop.position.x - i, bishop.position.y - i);
 
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);
@@ -106,7 +107,7 @@ export const getPossibleBishopMoves = (bishop: Piece, boardState: Piece[]): Posi
     }
 
     for (let i = 1; i < 8; ++i) {
-        const destination: Position = {x: bishop.position.x - i, y: bishop.position.y + i};
+        const destination = new Position(bishop.position.x - i, bishop.position.y + i);
 
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);

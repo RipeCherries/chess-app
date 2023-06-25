@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import ChessBoard from "../chessBoard/ChessBoard";
-import {initialBoardState, Piece, PieceType, Position, samePosition, TeamType} from "../../Constants";
+import {initialBoardState, PieceType, samePosition, TeamType} from "../../Constants";
 import {
     bishopMove,
     getPossibleBishopMoves, getPossibleKingMove,
@@ -8,6 +8,7 @@ import {
     getPossiblePawnMoves, getPossibleQueenMoves,
     getPossibleRookMoves, kingMove, knightMove, pawnMove, queenMove, rookMove
 } from "../../referee/rules";
+import {Position, Piece} from "../../models";
 
 const Referee = () => {
     const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
@@ -39,7 +40,7 @@ const Referee = () => {
                     piece.position.x = destination.x;
                     piece.position.y = destination.y;
                     result.push(piece);
-                } else if (!(samePosition(piece.position, {x: destination.x, y: destination.y - pawnDirection}))) {
+                } else if (!(samePosition(piece.position, new Position(destination.x, destination.y - pawnDirection)))) {
                     if (piece.type === PieceType.PAWN) {
                         piece.enPassant = false;
                     }
@@ -64,7 +65,7 @@ const Referee = () => {
                     }
 
                     result.push(piece);
-                } else if (!(samePosition(piece.position, {x: destination.x, y: destination.y}))) {
+                } else if (!(samePosition(piece.position, new Position(destination.x, destination.y)))) {
                     if (piece.type === PieceType.PAWN) {
                         piece.enPassant = true;
                     }
