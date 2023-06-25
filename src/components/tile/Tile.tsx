@@ -12,7 +12,8 @@ const Tile = ({number, image, highlight}: Props) => {
     const className: string = ["tile",
         number % 2 === 0 && "black-tile",
         number % 2 !== 0 && "white-tile",
-        highlight && "highlight-tile"
+        highlight && "highlight-tile",
+        image && "chess-piece-tile"
     ].filter(Boolean).join(" ");
 
     return (

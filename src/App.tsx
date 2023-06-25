@@ -1,14 +1,14 @@
 import React from 'react';
 import './App.css';
 
-import ChessBoard from "./components/chessBoard/ChessBoard";
+import Referee from "./components/referee/Referee";
 
 const App = () => {
     return (
         <div className="app">
-            <ChessBoard/>
+            <Referee/>
         </div>
-    )
+    );
 }
 
 export default App;
