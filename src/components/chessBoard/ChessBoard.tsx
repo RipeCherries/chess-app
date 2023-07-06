@@ -75,7 +75,7 @@ const ChessBoard = ({playMove, pieces}: Props) => {
             const currentPiece = pieces.find(piece => piece.samePosition(grabPosition));
 
             if (currentPiece) {
-                const success = playMove(currentPiece, new Position(x, y));
+                const success = playMove(currentPiece.clone(), new Position(x, y));
                 if (!success) {
                     activePiece.style.position = "relative";
                     activePiece.style.removeProperty("top");

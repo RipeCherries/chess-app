@@ -1,13 +1,14 @@
 import {Piece, Position} from "./models";
 import {PieceType, TeamType} from "./Types";
 import {Pawn} from "./models/Pawn";
+import {Board} from "./models/Board";
 
 export const HORIZONTAL_AXIS = ["a", "b", "c", "d", "e", "f", "g", "h"];
 export const VERTICAL_AXIS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
 export const GRID_SIZE = 80;
 
-export const initialBoardState: Piece[] = [
+export const initialBoard: Board = new Board([
     new Pawn(new Position(0, 6), TeamType.OPPONENT),
     new Pawn(new Position(1, 6), TeamType.OPPONENT),
     new Pawn(new Position(2, 6), TeamType.OPPONENT),
@@ -46,4 +47,4 @@ export const initialBoardState: Piece[] = [
 
     new Piece(new Position(4, 7), PieceType.KING, TeamType.OPPONENT),
     new Piece(new Position(4, 0), PieceType.KING, TeamType.OUR)
-];
+]);

@@ -5,8 +5,12 @@ import {PieceType, TeamType} from "../Types";
 export class Pawn extends Piece {
     enPassant?: boolean;
 
-    constructor(position: Position, team: TeamType) {
-        super(position, PieceType.PAWN, team);
+    constructor(position: Position, team: TeamType, enPassant?: boolean, possibleMoves: Position[] = []) {
+        super(position, PieceType.PAWN, team, possibleMoves);
+        this.enPassant = enPassant;
     }
 
+    clone(): Pawn {
+        return new Pawn(this.position.clone(), this.team, this.enPassant, this.possibleMoves?.map(move => move.clone()));
+    }
 }
