@@ -34,7 +34,11 @@ const Referee = () => {
         let promotionRow = playedPiece.team === TeamType.OUR ? 7 : 0;
         if (destination.y === promotionRow && playedPiece.isPawn) {
             modalRef.current?.classList.remove("hidden");
-            setPromotionPawn(playedPiece);
+            setPromotionPawn((prevPromotionPawn) => {
+                const clonedPlayedPiece = playedPiece.clone();
+                clonedPlayedPiece.position = destination.clone();
+                return clonedPlayedPiece;
+            });
         }
 
         let playedMoveIsValid = false
@@ -93,36 +97,24 @@ const Referee = () => {
             return;
         }
 
-        board.pieces = board.pieces.reduce((results, piece) => {
-            if (piece.samePiecePosition(promotionPawn)) {
-                piece.type = pieceType;
+        setBoard((prevBoard) => {
+            const clonedBoard = board.clone();
 
-                const teamType = piece.team === TeamType.OUR ? "w" : "b";
-
-                let image = "";
-                switch (pieceType) {
-                    case PieceType.BISHOP:
-                        image = "bishop";
-                        break;
-                    case PieceType.ROOK:
-                        image = "rook";
-                        break;
-                    case PieceType.KNIGHT:
-                        image = "knight";
-                        break;
-                    case PieceType.QUEEN:
-                        image = "queen";
-                        break;
+            clonedBoard.pieces = clonedBoard.pieces.reduce((results, piece) => {
+                if (piece.samePiecePosition(promotionPawn)) {
+                    results.push(new Piece(piece.position.clone(), pieceType, piece.team))
+                } else {
+                    results.push(piece);
                 }
 
-                piece.image = `assets/images/${image}_${teamType}.png`;
-            }
-            results.push(piece);
+                return results;
+            }, [] as Piece[]);
 
-            return results;
-        }, [] as Piece[]);
+            clonedBoard.calculateAllMoves();
 
-        updatePossibleMoves();
+            return clonedBoard;
+        });
+
         modalRef.current?.classList.add("hidden");
     }
 
