@@ -28,8 +28,24 @@ const Referee = () => {
     }
 
     const playMove = (playedPiece: Piece, destination: Position): boolean => {
-        const validMove = isValidMove(playedPiece.position, destination, playedPiece.type, playedPiece.team);
+        if (playedPiece.possibleMoves === undefined) {
+            return false;
+        }
+
+
+        const validMove = playedPiece.possibleMoves?.some(move => move.samePosition(destination));
+        if (!validMove) {
+            return false;
+        }
+        
         const enPassantMove = isEnPassantMove(playedPiece.position, destination, playedPiece.type, playedPiece.team);
+
+        let playedMoveIsValid = false
+
+        setBoard((prevBoard) => {
+            playedMoveIsValid = board.playMove(enPassantMove, validMove, playedPiece, destination);
+            return board.clone();
+        });
 
         let promotionRow = playedPiece.team === TeamType.OUR ? 7 : 0;
         if (destination.y === promotionRow && playedPiece.isPawn) {
@@ -40,13 +56,6 @@ const Referee = () => {
                 return clonedPlayedPiece;
             });
         }
-
-        let playedMoveIsValid = false
-
-        setBoard((prevBoard) => {
-            playedMoveIsValid = board.playMove(enPassantMove, validMove, playedPiece, destination);
-            return board.clone();
-        });
 
         return playedMoveIsValid;
     }

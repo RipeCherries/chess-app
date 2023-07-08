@@ -3,9 +3,11 @@ import {Pawn} from "./Pawn";
 import {Position} from "./Position";
 import {PieceType, TeamType} from "../Types";
 import {
-    getPossibleBishopMoves, getPossibleKingMove,
+    getPossibleBishopMoves,
+    getPossibleKingMove,
     getPossibleKnightMoves,
-    getPossiblePawnMoves, getPossibleQueenMoves,
+    getPossiblePawnMoves,
+    getPossibleQueenMoves,
     getPossibleRookMoves
 } from "../referee/rules";
 
@@ -19,6 +21,54 @@ export class Board {
     calculateAllMoves() {
         for (const piece of this.pieces) {
             piece.possibleMoves = this.getValidMoves(piece);
+        }
+
+        this.checkKingMoves();
+    }
+
+    checkKingMoves() {
+        const king = this.pieces.find(piece => piece.isKing && piece.team === TeamType.OPPONENT);
+        if (king?.possibleMoves === undefined) {
+            return;
+        }
+
+        for (const move of king.possibleMoves) {
+            const simulatedBoard = this.clone();
+
+            const pieceAtDestination = simulatedBoard.pieces.find(p => p.samePosition(move));
+            if (pieceAtDestination !== undefined) {
+                simulatedBoard.pieces = simulatedBoard.pieces.filter(p => !p.samePosition(move));
+            }
+
+            const simulatedKing = simulatedBoard.pieces.find(p => p.isKing && p.team === TeamType.OPPONENT);
+            simulatedKing!.position = move;
+
+            for (const enemy of simulatedBoard.pieces.filter(p => p.team === TeamType.OUR)) {
+                enemy.possibleMoves = simulatedBoard.getValidMoves(enemy)
+            }
+
+            let safe = true;
+
+            for (const piece of simulatedBoard.pieces) {
+                if (piece.team === TeamType.OPPONENT) {
+                    continue;
+                }
+                if (piece.isPawn) {
+                    const possiblePawnMoves = simulatedBoard.getValidMoves(piece);
+
+                    if (possiblePawnMoves.some(p => p.samePosition(move))) {
+                        safe = false;
+                        break;
+                    }
+                } else if (piece.possibleMoves?.some(p => p.x !== piece.position.x && p.samePosition(move))) {
+                    safe = false;
+                    break;
+                }
+            }
+
+            if (!safe) {
+                king.possibleMoves = king.possibleMoves?.filter(m => !m.samePosition(move));
+            }
         }
     }
 
