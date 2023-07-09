@@ -12,10 +12,16 @@ import {
 } from "../referee/rules";
 
 export class Board {
-    pieces: Piece[];
+    pieces: Piece[]
+    totalTurns: number;
 
-    constructor(pieces: Piece[]) {
+    constructor(pieces: Piece[], totalTurns: number) {
         this.pieces = pieces;
+        this.totalTurns = totalTurns;
+    }
+
+    get currentTeam(): TeamType {
+        return this.totalTurns % 2 === 0 ? TeamType.OPPONENT : TeamType.OUR;
     }
 
     calculateAllMoves() {
@@ -23,51 +29,45 @@ export class Board {
             piece.possibleMoves = this.getValidMoves(piece);
         }
 
-        this.checkKingMoves();
+        this.checkCurrentTeamMoves();
+
+        for (const piece of this.pieces.filter(p => p.team !== this.currentTeam)) {
+            piece.possibleMoves = [];
+        }
     }
 
-    checkKingMoves() {
-        const king = this.pieces.find(piece => piece.isKing && piece.team === TeamType.OPPONENT);
-        if (king?.possibleMoves === undefined) {
-            return;
-        }
-
-        for (const move of king.possibleMoves) {
-            const simulatedBoard = this.clone();
-
-            const pieceAtDestination = simulatedBoard.pieces.find(p => p.samePosition(move));
-            if (pieceAtDestination !== undefined) {
-                simulatedBoard.pieces = simulatedBoard.pieces.filter(p => !p.samePosition(move));
+    checkCurrentTeamMoves() {
+        for (const piece of this.pieces.filter(p => p.team === this.currentTeam)) {
+            if (piece.possibleMoves === undefined) {
+                continue;
             }
 
-            const simulatedKing = simulatedBoard.pieces.find(p => p.isKing && p.team === TeamType.OPPONENT);
-            simulatedKing!.position = move;
+            for (const move of piece.possibleMoves) {
+                const simulatedBoard = this.clone();
 
-            for (const enemy of simulatedBoard.pieces.filter(p => p.team === TeamType.OUR)) {
-                enemy.possibleMoves = simulatedBoard.getValidMoves(enemy)
-            }
-
-            let safe = true;
-
-            for (const piece of simulatedBoard.pieces) {
-                if (piece.team === TeamType.OPPONENT) {
-                    continue;
+                const pieceAtDestination = simulatedBoard.pieces.find(p => p.samePosition(move));
+                if (pieceAtDestination !== undefined) {
+                    simulatedBoard.pieces.filter(p => !p.samePosition(move));
                 }
-                if (piece.isPawn) {
-                    const possiblePawnMoves = simulatedBoard.getValidMoves(piece);
 
-                    if (possiblePawnMoves.some(p => p.samePosition(move))) {
-                        safe = false;
-                        break;
+                const clonedPiece = simulatedBoard.pieces.find(p => p.samePiecePosition(piece))!;
+                clonedPiece.position = move.clone();
+
+                const clonedKing = simulatedBoard.pieces.find(p => p.isKing && p.team === simulatedBoard.currentTeam)!;
+
+                for (const enemy of simulatedBoard.pieces.filter(p => p.team !== simulatedBoard.currentTeam)) {
+                    enemy.possibleMoves = simulatedBoard.getValidMoves(enemy);
+
+                    if (enemy.isPawn) {
+                        if (enemy.possibleMoves.some(m => m.x !== enemy.position.x && m.samePosition(clonedKing.position))) {
+                            piece.possibleMoves = piece.possibleMoves?.filter(m => m.samePosition(move));
+                        }
+                    } else {
+                        if (enemy.possibleMoves.some(m => m.samePosition(clonedKing.position))) {
+                            piece.possibleMoves = piece.possibleMoves?.filter(m => m.samePosition(move));
+                        }
                     }
-                } else if (piece.possibleMoves?.some(p => p.x !== piece.position.x && p.samePosition(move))) {
-                    safe = false;
-                    break;
                 }
-            }
-
-            if (!safe) {
-                king.possibleMoves = king.possibleMoves?.filter(m => !m.samePosition(move));
             }
         }
     }
@@ -142,6 +142,6 @@ export class Board {
     }
 
     clone(): Board {
-        return new Board(this.pieces.map(piece => piece.clone()));
+        return new Board(this.pieces.map(piece => piece.clone()), this.totalTurns);
     }
 }

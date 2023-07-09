@@ -1,15 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
 import ChessBoard from "../chessBoard/ChessBoard";
 import {initialBoard} from "../../Constants";
-import {
-    bishopMove,
-    kingMove,
-    knightMove,
-    pawnMove,
-    queenMove,
-    rookMove
-} from "../../referee/rules";
-import {Position, Piece} from "../../models";
+import {bishopMove, kingMove, knightMove, pawnMove, queenMove, rookMove} from "../../referee/rules";
+import {Piece, Position} from "../../models";
 import {PieceType, TeamType} from "../../Types";
 import {Pawn} from "../../models/Pawn";
 import {Board} from "../../models/Board";
@@ -20,15 +13,19 @@ const Referee = () => {
     const modalRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        updatePossibleMoves();
-    }, [])
-
-    const updatePossibleMoves = () => {
         board.calculateAllMoves();
-    }
+    }, [])
 
     const playMove = (playedPiece: Piece, destination: Position): boolean => {
         if (playedPiece.possibleMoves === undefined) {
+            return false;
+        }
+
+        if (playedPiece.team === TeamType.OUR && board.totalTurns % 2 !== 1) {
+            return false;
+        }
+
+        if (playedPiece.team === TeamType.OPPONENT && board.totalTurns % 2 !== 0) {
             return false;
         }
 
@@ -37,14 +34,18 @@ const Referee = () => {
         if (!validMove) {
             return false;
         }
-        
+
         const enPassantMove = isEnPassantMove(playedPiece.position, destination, playedPiece.type, playedPiece.team);
 
         let playedMoveIsValid = false
 
         setBoard((prevBoard) => {
-            playedMoveIsValid = board.playMove(enPassantMove, validMove, playedPiece, destination);
-            return board.clone();
+            const clonedBoard = board.clone();
+
+            clonedBoard.totalTurns += 1;
+            playedMoveIsValid = clonedBoard.playMove(enPassantMove, validMove, playedPiece, destination);
+
+            return clonedBoard;
         });
 
         let promotionRow = playedPiece.team === TeamType.OUR ? 7 : 0;
@@ -133,6 +134,7 @@ const Referee = () => {
 
     return (
         <>
+            <p style={{color: "white", fontSize: "24px"}}>{board.totalTurns}</p>
             <div className="pawn-promotion-modal hidden" ref={modalRef}>
                 <div className="modal-body">
                     <img onClick={() => promotePawn(PieceType.ROOK)}
