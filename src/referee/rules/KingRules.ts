@@ -131,3 +131,57 @@ export const getPossibleKingMove = (king: Piece, boardState: Piece[]): Position[
 
     return possibleMoves;
 }
+
+export const getCastlingMoves = (king: Piece, boardState: Piece[]): Position[] => {
+    const possibleMoves: Position[] = [];
+
+    if (king.hasMoved) {
+        return possibleMoves;
+    }
+
+    const rooks = boardState.filter(p => p.isRook && p.team === king.team && !p.hasMoved);
+    for (const rook of rooks) {
+        const direction = king.position.x - rook.position.x > 0 ? 1 : -1;
+
+        const adjacentPosition = king.position.clone();
+        adjacentPosition.x += direction;
+
+        if (!rook.possibleMoves?.some(m => m.samePosition(adjacentPosition))) {
+            continue;
+        }
+
+        const conceringTiles = rook.possibleMoves?.filter(m => m.y === king.position.y);
+
+        const enemyPieces = boardState.filter(p => p.team !== king.team);
+
+        let valid = true;
+
+        for (const enemy of enemyPieces) {
+            if (enemy.possibleMoves === undefined) {
+                continue;
+            }
+
+            for (const move of enemy.possibleMoves) {
+                if (conceringTiles.some(t => t.samePosition(move))) {
+                    valid = false;
+                }
+
+                if (!valid) {
+                    break;
+                }
+            }
+
+            if (!valid) {
+                break;
+            }
+        }
+
+        if (!valid) {
+            continue;
+        }
+
+        possibleMoves.push(rook.position.clone());
+    }
+
+    return possibleMoves;
+}
