@@ -28,6 +28,10 @@ export const getPossibleKingMove = (king: Piece, boardState: Piece[]): Position[
     for (let i = 1; i < 2; ++i) {
         const destination = new Position(king.position.x, king.position.y + i);
 
+        if (destination.x < 0 || destination.x > 7 || destination.y < 0 || destination.y > 7) {
+            break;
+        }
+
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);
         } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
@@ -40,6 +44,10 @@ export const getPossibleKingMove = (king: Piece, boardState: Piece[]): Position[
 
     for (let i = 1; i < 2; ++i) {
         const destination = new Position(king.position.x, king.position.y - i);
+
+        if (destination.x < 0 || destination.x > 7 || destination.y < 0 || destination.y > 7) {
+            break;
+        }
 
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);
@@ -54,6 +62,10 @@ export const getPossibleKingMove = (king: Piece, boardState: Piece[]): Position[
     for (let i = 1; i < 2; ++i) {
         const destination = new Position(king.position.x - i, king.position.y);
 
+        if (destination.x < 0 || destination.x > 7 || destination.y < 0 || destination.y > 7) {
+            break;
+        }
+
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);
         } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
@@ -66,6 +78,10 @@ export const getPossibleKingMove = (king: Piece, boardState: Piece[]): Position[
 
     for (let i = 1; i < 2; ++i) {
         const destination = new Position(king.position.x + i, king.position.y);
+
+        if (destination.x < 0 || destination.x > 7 || destination.y < 0 || destination.y > 7) {
+            break;
+        }
 
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);
@@ -80,6 +96,10 @@ export const getPossibleKingMove = (king: Piece, boardState: Piece[]): Position[
     for (let i = 1; i < 2; ++i) {
         const destination = new Position(king.position.x + i, king.position.y + i);
 
+        if (destination.x < 0 || destination.x > 7 || destination.y < 0 || destination.y > 7) {
+            break;
+        }
+
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);
         } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
@@ -92,6 +112,10 @@ export const getPossibleKingMove = (king: Piece, boardState: Piece[]): Position[
 
     for (let i = 1; i < 2; ++i) {
         const destination = new Position(king.position.x + i, king.position.y - i);
+
+        if (destination.x < 0 || destination.x > 7 || destination.y < 0 || destination.y > 7) {
+            break;
+        }
 
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);
@@ -106,6 +130,10 @@ export const getPossibleKingMove = (king: Piece, boardState: Piece[]): Position[
     for (let i = 1; i < 2; ++i) {
         const destination = new Position(king.position.x - i, king.position.y - i);
 
+        if (destination.x < 0 || destination.x > 7 || destination.y < 0 || destination.y > 7) {
+            break;
+        }
+
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);
         } else if (tileIsOccupiedByOpponent(destination, boardState, king.team)) {
@@ -118,6 +146,10 @@ export const getPossibleKingMove = (king: Piece, boardState: Piece[]): Position[
 
     for (let i = 1; i < 2; ++i) {
         const destination = new Position(king.position.x - i, king.position.y + i);
+
+        if (destination.x < 0 || destination.x > 7 || destination.y < 0 || destination.y > 7) {
+            break;
+        }
 
         if (!tileIsOccupied(destination, boardState)) {
             possibleMoves.push(destination);

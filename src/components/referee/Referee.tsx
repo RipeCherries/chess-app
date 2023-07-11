@@ -8,9 +8,10 @@ import {Pawn} from "../../models/Pawn";
 import {Board} from "../../models/Board";
 
 const Referee = () => {
-    const [board, setBoard] = useState<Board>(initialBoard);
+    const [board, setBoard] = useState<Board>(initialBoard.clone());
     const [promotionPawn, setPromotionPawn] = useState<Piece>();
     const modalRef = useRef<HTMLDivElement>(null);
+    const checkmateModalRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         board.calculateAllMoves();
@@ -44,6 +45,10 @@ const Referee = () => {
 
             clonedBoard.totalTurns += 1;
             playedMoveIsValid = clonedBoard.playMove(enPassantMove, validMove, playedPiece, destination);
+
+            if (clonedBoard.winningTeam !== undefined) {
+                checkmateModalRef.current?.classList.remove("hidden");
+            }
 
             return clonedBoard;
         });
@@ -132,10 +137,15 @@ const Referee = () => {
         return promotionPawn?.team === TeamType.OUR ? "w" : "b";
     }
 
+    const restartGame = () => {
+        checkmateModalRef.current?.classList.add("hidden");
+        setBoard(initialBoard.clone());
+    }
+
     return (
         <>
             <p style={{color: "white", fontSize: "24px"}}>{board.totalTurns}</p>
-            <div className="pawn-promotion-modal hidden" ref={modalRef}>
+            <div className="modal hidden" ref={modalRef}>
                 <div className="modal-body">
                     <img onClick={() => promotePawn(PieceType.ROOK)}
                          src={`/assets/images/rook_${promotionTeamType()}.png`}/>
@@ -145,6 +155,14 @@ const Referee = () => {
                          src={`/assets/images/knight_${promotionTeamType()}.png`}/>
                     <img onClick={() => promotePawn(PieceType.QUEEN)}
                          src={`/assets/images/queen_${promotionTeamType()}.png`}/>
+                </div>
+            </div>
+            <div className="modal hidden" ref={checkmateModalRef}>
+                <div className="modal-body">
+                    <div className="checkmate-body">
+                        <span>The winning team is {board.winningTeam === TeamType.OUR ? "white" : "black"}!</span>
+                        <button onClick={restartGame}>Play again</button>
+                    </div>
                 </div>
             </div>
             <ChessBoard playMove={playMove} pieces={board.pieces}/>

@@ -48,3 +48,5 @@ export const initialBoard: Board = new Board([
     new Piece(new Position(4, 7), PieceType.KING, TeamType.OPPONENT, false),
     new Piece(new Position(4, 0), PieceType.KING, TeamType.OUR, false)
 ], 1);
+
+initialBoard.calculateAllMoves();
